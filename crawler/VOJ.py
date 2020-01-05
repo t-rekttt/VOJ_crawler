@@ -2,6 +2,7 @@ import csv
 import re
 import os
 import sys
+import threading
 from io import StringIO
 from tqdm import tqdm
 from SPOJCrawler import SPOJCrawler
@@ -60,7 +61,9 @@ def main(crawler, output_dir):
             file_name = "{2}[{0}][RESULT_{3}][TIME_{4}][MEM_{5}][{1}]".format(row[0], row[1].replace(' ', '_').replace(':','-'), row[2], row[3], row[4], row[5], row[5])
             
             
-        crawler.download_solution(os.path.join(output_dir, file_name), username, row[0], row[6])
+        t = threading.Thread(target=crawler.download_solution, args=(os.path.join(output_dir, file_name), username, row[0], row[6]))
+        t.start()
+        
         tBar.set_description("Accepted submissions found: " + str(accepted_submission_count))
     print("You have", accepted_submission_count, "accepted submissions")
 if __name__ == '__main__':
